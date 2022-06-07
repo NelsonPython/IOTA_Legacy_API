@@ -1,1 +1,639 @@
 # IOTA_Legacy_API
+This content was originally hosted at the IOTA Data Marketplace:  https://data.iota.org/#/
+
+The IOTA Data Marketplace API reached its end-of-life in April 2020 and the documentation was moved to:  https://wiki.iota.org/legacy
+
+
+ <h1 id="introduction">Introduction</h1>
+        <p>Welcome to the API documentation for the IOTA Data Marketplace. This provides you with the means to interact with the Marketplace programmatically. All interactions with this API will also effect the user interface, including your stream purchases and the devices you created/delete.</p>
+        <p>The API exists for two purposes:</p>
+        <ol>
+          <li>For users who want to <strong>consume</strong> data streams from devices on the Marketplace</li>
+          <li>For users that want to <strong>manage</strong> their devices on the Marketplace</li>
+        </ol>
+        <p>To get started with the Marketplace API you will need to authenticate yourself with a Google account and get an API key from the website.</p>
+        <h1 id="authentication">Authentication</h1>
+        <blockquote>
+          <p>These are an example of the keys required to use the API:</p>
+        </blockquote>
+        <pre class="highlight json"><code>{
+  <span class="hljs-attr">&quot;apiKey&quot;</span>: <span class="hljs-string">&quot;422c17ca-3f4d-4b6a-be50-51607fe0a324&quot;</span>,
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;iEG6V9x70oPOMH7PHXfZlpx4VtG2&quot;</span>
+}</code></pre>
+        <p>In order to use the API you will need to get your API key and User ID from the Data Marketplace <a href="https://data.iota.org/#/dashboard">user dashboard</a>. The dashboard provides a graphical interface for the API in case you aren&#39;t comfortable with using this API.</p>
+        <h3 id="api-key">API key</h3>
+        <p>With this key you will be able to administer the devices you own and access the API for general use.</p>
+        <h3 id="user-id">User ID</h3>
+        <p>You will also need your <code>id</code> in order to attribute purchases to your self.</p>
+        <h1 id="consuming-data">Consuming data</h1>
+        <h2 id="get-all-devices">Get All Devices</h2>
+        <pre class="highlight javascript"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node-fetch&#x27;</span>);
+
+<span class="hljs-keyword">const</span> sendRequest = <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> fetch(<span class="hljs-string">&#x27;https://api.marketplace.tangle.works/devices&#x27;</span>);
+  <span class="hljs-keyword">const</span> json = <span class="hljs-keyword">await</span> response.json();
+
+  <span class="hljs-built_in">console</span>.log(json);
+};
+
+sendRequest();</code></pre>
+        <blockquote>
+          <p>The above command returns JSON structured like this:</p>
+        </blockquote>
+        <pre class="highlight json"><code>[
+  {
+    &quot;sensorId&quot;: &quot;Hello&quot;,
+    &quot;type&quot;: &quot;Weather Station&quot;,
+    &quot;value&quot;: &quot;82913&quot;,
+    &quot;location&quot;: {
+      &quot;country&quot;: &quot;Australia&quot;,
+      &quot;city&quot;: &quot;Dianella&quot;
+    },
+    &quot;lon&quot;: &quot;52.442&quot;,
+    &quot;lat&quot;: &quot;-12.32&quot;,
+    &quot;dataTypes&quot;: [
+      {
+        &quot;id&quot;: &quot;temp&quot;,
+        &quot;unit&quot;: &quot;c&quot;,
+        &quot;name&quot;: &quot;Temperature&quot;
+      },
+      {
+        &quot;name&quot;: &quot;Humidity&quot;,
+        &quot;id&quot;: &quot;hum&quot;,
+        &quot;unit&quot;: &quot;hpa&quot;
+      }
+    ],
+    &quot;owner&quot;: &quot;OtvxJHA2c5gNvqtwkOA767QrAnE3&quot;,
+    &quot;address&quot;: &quot;ZXYZZULDJWZTKFNNPAGIYQCVLCMLGTQEXJYBLEUOLJMLF9MY&quot;
+  },
+  {...}
+]</code></pre>
+        <p>This endpoint retrieves all devices.</p>
+        <h3 id="http-request">HTTP Request</h3>
+        <p><code>GET https://api.marketplace.tangle.works/devices</code></p>
+        <h2 id="create-and-fund-wallet">Create and Fund Wallet</h2>
+        <pre class="highlight javascript"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node-fetch&#x27;</span>);
+
+<span class="hljs-keyword">const</span> sendRequest = <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> fetch(<span class="hljs-string">&#x27;https://api.marketplace.tangle.works/wallet&#x27;</span>, {
+    <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;POST&#x27;</span>,
+    <span class="hljs-attr">headers</span>: { <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> },
+    <span class="hljs-attr">body</span>: <span class="hljs-built_in">JSON</span>.stringify({
+      <span class="hljs-attr">userId</span>: <span class="hljs-string">&#x27;xlXMajjxTleDwmeIEG9SHddlCM02&#x27;</span>
+    })
+  });
+  <span class="hljs-keyword">const</span> json = <span class="hljs-keyword">await</span> response.json();
+  <span class="hljs-built_in">console</span>.log(json);
+};
+
+sendRequest();</code></pre>
+        <blockquote>
+          <p>The above command returns JSON structured like this:</p>
+        </blockquote>
+        <pre class="highlight json"><code>{
+  <span class="hljs-attr">&quot;messageId&quot;</span>: <span class="hljs-string">&quot;8588a53781f125e9667b08edebe72922a71c997f9b3a08ac0568654deccc47c3&quot;</span>
+}</code></pre>
+        <p>This endpoint creates a new wallet and funds it with free IOTA tokens. Please note that Devnet tokens can not be used on the Mainnet or exchanged on any Cryptocurrency exchange platform.</p>
+        <h3 id="http-request-1">HTTP Request</h3>
+        <p><code>POST https://api.marketplace.tangle.works/wallet</code></p>
+        <h3 id="body-formatting">Body Formatting</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parameters</th>
+              <th>Required</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>userId</td>
+              <td>true</td>
+              <td>Your user ID</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2 id="get-user">Get User</h2>
+        <pre class="highlight javascript"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node-fetch&#x27;</span>);
+
+<span class="hljs-keyword">const</span> sendRequest = <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> fetch(<span class="hljs-string">&#x27;https://api.marketplace.tangle.works/user?userId=xlXMajjxTleDwIEG9SHddlCM02&#x27;</span>);
+  <span class="hljs-keyword">const</span> json = <span class="hljs-keyword">await</span> response.json();
+  <span class="hljs-built_in">console</span>.log(json);
+};
+
+sendRequest();</code></pre>
+        <blockquote>
+          <p>The above command returns JSON structured like this:</p>
+        </blockquote>
+        <pre class="highlight json"><code>{
+  <span class="hljs-attr">&quot;wallet&quot;</span>: {
+    <span class="hljs-attr">&quot;balance&quot;</span>: <span class="hljs-number">1000000</span>
+  },
+  <span class="hljs-attr">&quot;numberOfDevices&quot;</span>: <span class="hljs-number">5</span>
+}</code></pre>
+        <p>This endpoint returns data of a given user</p>
+        <h3 id="http-request-2">HTTP Request</h3>
+        <p><code>GET https://api.marketplace.tangle.works/user</code></p>
+        <h3 id="query-parameters">Query Parameters</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parameters</th>
+              <th>Required</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>userId</td>
+              <td>true</td>
+              <td>Your user ID</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2 id="query-stream">Query Stream</h2>
+        <pre class="highlight javascript"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node-fetch&#x27;</span>);
+
+<span class="hljs-keyword">const</span> sendRequest = <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> fetch(
+    <span class="hljs-string">&#x27;https://api.marketplace.tangle.works/stream?deviceId=star-wars-test&amp;userId=xlXMajjxTleDwmeIEG9SHddlCM02&amp;time=null&#x27;</span>
+  );
+  <span class="hljs-keyword">const</span> json = <span class="hljs-keyword">await</span> response.json();
+  <span class="hljs-built_in">console</span>.log(json);
+};
+
+sendRequest();</code></pre>
+        <blockquote>
+          <p>If the device stream was not purchased, the above command returns JSON structured like this:</p>
+        </blockquote>
+        <pre class="highlight json"><code>{
+  <span class="hljs-attr">&quot;success&quot;</span>: <span class="hljs-literal">false</span>
+}</code></pre>
+        <blockquote>
+          <p>If the device stream was already purchased, the above command returns JSON structured like this:</p>
+        </blockquote>
+        <pre class="highlight json"><code>[
+    {
+       &quot;time&quot;:1550057296806,
+       &quot;root&quot;:&quot;XXNHWURJOQIYSTAQVBDBVQILNCJQQORZEIWGSSWDXMWQANZWCQLXIEOGICPP9DXVR9KGSZ9MJEGEHFUIX&quot;,
+       &quot;sidekey&quot;:&quot;GZ9FKCYWQTBKYSNNM9SZNLLLCMRCCXZPHBIFIXUNCBYSWTLGZUSNAYRXTWXGXTNHKKSWFXSN9LMP9AOVK&quot;,
+       &quot;messageId&quot;: &quot;eae8d76f18f4d7c9f2673fe7ed13c11078445c65189c1f40447cb0eb6164bf15&quot;
+    },
+    {
+       &quot;time&quot;:1550053854946,
+       &quot;root&quot;:&quot;LNYSJXWON9OXFSXSVBK9XGJZRLFQVDKGYBOKVJQYOD9CRSVMOXMDAEDPXBNTKMMQJGQKSYSQDM9TXGPU9&quot;,
+       &quot;sidekey&quot;:&quot;MGZHCGKQIINYSGYPWPKPXJTQOAETGDXJWLPKKARZIHUFDYQOFVYVOUMZC99YEMPBNCXSEDPYLLUFD9ZFR&quot;,
+       &quot;messageId&quot;: &quot;b7097b8f9d2c18bc8a81d9986b258eff0ec0b9f69b557c74e647db8084bbe025&quot;
+    },
+    { ... }
+]</code></pre>
+        <p>This endpoint queries a purchased stream.</p>
+        <p>This request returns an arr,ay of JSON objects which contain information like MAM stream root and encryption key. This information is used to retrieve data from IOTA Tangle.</p>
+        <p>The data is retrieved in chunks. To retrieve the next chunk of data, determine the earliest (smallest) value of the time attribute from the response, and send this value as time parameter with the next request</p>
+        <p><code>https://api.marketplace.tangle.works/stream?deviceId=star-wars-test&amp;userId=xlXMajjxTleDwmeIEG9SHddlCM02&amp;time=1550053854946</code></p>
+        <h3 id="http-request-3">HTTP Request</h3>
+        <p><code>GET https://api.marketplace.tangle.works/stream</code></p>
+        <h3 id="query-parameters-1">Query Parameters</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parameters</th>
+              <th>Required</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>userId</td>
+              <td>true</td>
+              <td>Your user ID</td>
+            </tr>
+            <tr>
+              <td>deviceId</td>
+              <td>true</td>
+              <td>The ID of the device&#39;s stream you&#39;d like access to.</td>
+            </tr>
+            <tr>
+              <td>time</td>
+              <td>false</td>
+              <td>Timestamp of the first data package. Default is <code>null</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <h2 id="purchase-stream">Purchase Stream</h2>
+        <pre class="highlight javascript"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node-fetch&#x27;</span>);
+
+<span class="hljs-keyword">const</span> sendRequest = <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> fetch(<span class="hljs-string">&#x27;https://api.marketplace.tangle.works/purchaseStream&#x27;</span>, {
+    <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;POST&#x27;</span>,
+    <span class="hljs-attr">headers</span>: { <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> },
+    <span class="hljs-attr">body</span>: <span class="hljs-built_in">JSON</span>.stringify({
+      <span class="hljs-attr">userId</span>: <span class="hljs-string">&#x27;76D1ppAqXNOYPDCsEm9tAj5rPhG3&#x27;</span>,
+      <span class="hljs-attr">deviceId</span>: <span class="hljs-string">&#x27;star-wars&#x27;</span>
+    })
+  });
+  <span class="hljs-keyword">const</span> json = <span class="hljs-keyword">await</span> response.json();
+  <span class="hljs-built_in">console</span>.log(json);
+};
+
+sendRequest();</code></pre>
+        <blockquote>
+          <p>The above command returns JSON structured like this:</p>
+        </blockquote>
+        <pre class="highlight json"><code>{
+  <span class="hljs-attr">&quot;success&quot;</span>: <span class="hljs-literal">true</span>
+}</code></pre>
+        <p>This endpoint purchases access for a user.</p>
+        <h3 id="http-request-4">HTTP Request</h3>
+        <p><code>POST https://api.marketplace.tangle.works/purchaseStream</code></p>
+        <h3 id="body-formatting-1">Body Formatting</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parameters</th>
+              <th>Required</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>userId</td>
+              <td>true</td>
+              <td>Your user ID</td>
+            </tr>
+            <tr>
+              <td>device</td>
+              <td>true</td>
+              <td>The ID of the device&#39;s stream you&#39;d like access to.</td>
+            </tr>
+          </tbody>
+        </table>
+        <h1 id="managing-devices">Managing Devices</h1>
+        <h2 id="create-new-device">Create New Device</h2>
+        <pre class="highlight javascript"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node-fetch&#x27;</span>);
+
+<span class="hljs-keyword">const</span> sendRequest = <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> fetch(<span class="hljs-string">&#x27;https://api.marketplace.tangle.works/newDevice&#x27;</span>, {
+    <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;POST&#x27;</span>,
+    <span class="hljs-attr">headers</span>: { <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> },
+    <span class="hljs-attr">body</span>: <span class="hljs-built_in">JSON</span>.stringify({
+      <span class="hljs-attr">apiKey</span>: <span class="hljs-string">&#x27;aaaaaaa-0b7a-4e44-7777-ef661777b9d2&#x27;</span>,
+      <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;star-wars-test&#x27;</span>,
+      <span class="hljs-attr">device</span>: {
+        <span class="hljs-attr">owner</span>: <span class="hljs-string">&#x27;R7zlZYlhSGKDJ5KKZrw6sJ4CQvG2&#x27;</span>,
+        <span class="hljs-attr">sensorId</span>: <span class="hljs-string">&#x27;star-wars&#x27;</span>,
+        <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;Star Wars Vehicle&#x27;</span>,
+        <span class="hljs-attr">company</span>: <span class="hljs-string">&#x27;Galactic Empire Inc.&#x27;</span>,
+        <span class="hljs-attr">price</span>: <span class="hljs-string">&#x27;100&#x27;</span>,
+        <span class="hljs-attr">date</span>: <span class="hljs-string">&#x27;14 February, 2019 11:16 am&#x27;</span>,
+        <span class="hljs-attr">inactive</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">dataTypes</span>: [
+          { <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;name&#x27;</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Vehicle Name&#x27;</span>, <span class="hljs-attr">unit</span>: <span class="hljs-string">&#x27;name&#x27;</span> },
+          { <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;model&#x27;</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Vehicle Model&#x27;</span>, <span class="hljs-attr">unit</span>: <span class="hljs-string">&#x27;model&#x27;</span> },
+          { <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;class&#x27;</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Vehicle Class&#x27;</span>, <span class="hljs-attr">unit</span>: <span class="hljs-string">&#x27;class&#x27;</span> },
+          { <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;manufacturer&#x27;</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Vehicle Manufacturer&#x27;</span>, <span class="hljs-attr">unit</span>: <span class="hljs-string">&#x27;manufacturer&#x27;</span> }
+        ],
+        <span class="hljs-attr">location</span>: {
+          <span class="hljs-attr">city</span>: <span class="hljs-string">&#x27;Theed&#x27;</span>,
+          <span class="hljs-attr">country</span>: <span class="hljs-string">&#x27;Naboo&#x27;</span>
+        },
+        <span class="hljs-attr">lat</span>: <span class="hljs-number">40</span>,
+        <span class="hljs-attr">lon</span>: <span class="hljs-number">20</span>
+      }
+    })
+  });
+  <span class="hljs-keyword">const</span> json = <span class="hljs-keyword">await</span> response.json();
+  <span class="hljs-built_in">console</span>.log(json);
+};
+
+sendRequest();</code></pre>
+        <blockquote>
+          <p>The above command returns JSON structured like this:</p>
+        </blockquote>
+        <pre class="highlight json"><code>{
+  <span class="hljs-attr">&quot;success&quot;</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">&quot;sk&quot;</span>: <span class="hljs-string">&quot;96df3aed4098f79063fbdcf342143c99a9ab02fe12f442dcecc3058a572912b2&quot;</span>
+}</code></pre>
+        <p>This endpoint creates a new device for a given user.</p>
+        <h3 id="http-request-5">HTTP Request</h3>
+        <p><code>POST https://api.marketplace.tangle.works/newDevice</code></p>
+        <h3 id="body-formatting-2">Body Formatting</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parameters</th>
+              <th>Required</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>apiKey</td>
+              <td>true</td>
+              <td>Your API Key</td>
+            </tr>
+            <tr>
+              <td>id</td>
+              <td>true</td>
+              <td>The proposed ID of your device</td>
+            </tr>
+            <tr>
+              <td>device</td>
+              <td>true</td>
+              <td>A fully formed <code>device</code> object</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2 id="publish-data-packet">Publish Data Packet</h2>
+        <pre class="highlight javascript"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node-fetch&#x27;</span>);
+<span class="hljs-keyword">const</span> crypto = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;crypto&#x27;</span>);
+<span class="hljs-keyword">const</span> { createChannel, createMessage, mamAttach } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@iota/mam.js&#x27;</span>);
+<span class="hljs-keyword">const</span> { asciiToTrytes } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;@iota/converter&#x27;</span>);
+
+<span class="hljs-comment">// Channel seed</span>
+<span class="hljs-keyword">let</span> seed;
+
+<span class="hljs-comment">// Random Key Generator</span>
+<span class="hljs-keyword">const</span> generateRandomKey = <span class="hljs-function">(<span class="hljs-params">length</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> charset = <span class="hljs-string">&#x27;ABCDEFGHIJKLMNOPQRSTUVWXYZ9&#x27;</span>;
+  <span class="hljs-keyword">let</span> key = <span class="hljs-string">&#x27;&#x27;</span>;
+  <span class="hljs-keyword">while</span> (key.length &lt; length) {
+    <span class="hljs-keyword">const</span> byte = crypto.randomBytes(<span class="hljs-number">1</span>);
+    <span class="hljs-keyword">if</span> (byte[<span class="hljs-number">0</span>] &lt; <span class="hljs-number">243</span>) {
+      key += charset.charAt(byte[<span class="hljs-number">0</span>] % <span class="hljs-number">27</span>);
+    }
+  }
+  <span class="hljs-keyword">return</span> key;
+};
+
+<span class="hljs-comment">// Publish to Tangle</span>
+<span class="hljs-keyword">const</span> publishData = <span class="hljs-keyword">async</span> (payload) =&gt; {
+  <span class="hljs-keyword">const</span> time = <span class="hljs-built_in">Date</span>.now();
+  <span class="hljs-keyword">const</span> packet = { time, <span class="hljs-attr">data</span>: { ...payload } };
+
+  <span class="hljs-comment">// Change MAM encryption key on each loop</span>
+  <span class="hljs-keyword">let</span> secretKey = generateRandomKey(<span class="hljs-number">81</span>);
+
+  <span class="hljs-keyword">if</span> (!seed) {
+    seed = generateRandomKey(<span class="hljs-number">81</span>);
+  }
+
+  <span class="hljs-comment">// Create channel with stored seed &amp; update secretKey</span>
+  <span class="hljs-keyword">const</span> security = <span class="hljs-number">2</span>;
+  <span class="hljs-keyword">const</span> mamState = createChannel(seed, security, <span class="hljs-string">&#x27;restricted&#x27;</span>, secretKey);
+
+  <span class="hljs-comment">// Create Trytes</span>
+  <span class="hljs-keyword">const</span> trytes = asciiToTrytes(<span class="hljs-built_in">JSON</span>.stringify(packet));
+
+  <span class="hljs-comment">// Get MAM payload</span>
+  <span class="hljs-keyword">const</span> message =createMessage(mamState, trytes);
+
+  <span class="hljs-comment">// Attach the payload. If the node url is outdate look at wiki.iota.org to get an updated one.</span>
+  <span class="hljs-keyword">const</span> transaction = <span class="hljs-keyword">await</span> mamAttach(<span class="hljs-string">&#x27;https://api.lb-0.h.chrysalis-devnet.iota.cafe&#x27;</span>, message, <span class="hljs-string">&#x27;SENSORDATA&#x27;</span>);
+
+  <span class="hljs-comment">// Store encryption key in Firebase</span>
+  <span class="hljs-keyword">await</span> storeKey({ <span class="hljs-attr">sidekey</span>: mamKey, <span class="hljs-attr">root</span>: message.root, <span class="hljs-attr">messageId</span>: transaction.messageId, time });
+};
+
+<span class="hljs-keyword">const</span> storeKey = <span class="hljs-keyword">async</span> (packet) =&gt; {
+  <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> fetch(<span class="hljs-string">&#x27;https://api.marketplace.tangle.works/newData&#x27;</span>, {
+    <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;POST&#x27;</span>,
+    <span class="hljs-attr">headers</span>: { <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> },
+    <span class="hljs-attr">body</span>: <span class="hljs-built_in">JSON</span>.stringify({
+      <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;star-wars-test&#x27;</span>,
+      <span class="hljs-attr">sk</span>: <span class="hljs-string">&#x27;IGLDKSJSJGKFXA&#x27;</span>, <span class="hljs-comment">// secret key of your device</span>
+      packet
+    })
+  });
+  <span class="hljs-keyword">const</span> json = <span class="hljs-keyword">await</span> response.json();
+  <span class="hljs-built_in">console</span>.log(json);
+};
+
+publishData({ <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;my test payload&#x27;</span> });</code></pre>
+        <blockquote>
+          <p>The above command returns JSON structured like this:</p>
+        </blockquote>
+        <pre class="highlight json"><code>{
+  <span class="hljs-attr">&quot;success&quot;</span>: <span class="hljs-literal">true</span>
+}</code></pre>
+        <p>This endpoint publishes new MAM event for a given device.</p>
+        <h3 id="http-request-6">HTTP Request</h3>
+        <p><code>POST https://api.marketplace.tangle.works/newData</code></p>
+        <h3 id="query-parameters-2">Query Parameters</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parameters</th>
+              <th>Required</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>device</td>
+              <td>true</td>
+              <td>The ID of the device&#39;s stream you are publishing to.</td>
+            </tr>
+            <tr>
+              <td>sk</td>
+              <td>true</td>
+              <td>Device&#39;s secret key (sk)</td>
+            </tr>
+            <tr>
+              <td>packet</td>
+              <td>true</td>
+              <td>A fully formed packet including time (<code>timestamp</code>) and &quot;restricted&quot; mode MAM <code>root</code> and <code>sidekey</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <h2 id="get-user-devices">Get User Devices</h2>
+        <pre class="highlight javascript"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node-fetch&#x27;</span>);
+
+<span class="hljs-keyword">const</span> sendRequest = <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> fetch(
+    <span class="hljs-string">&#x27;https://api.marketplace.tangle.works/devices?userId=xlXMajjxTleDwIEG9SHddlCM02&amp;apiKey=1111-gfgfdfg-46467-dsbhsjs-jgu&#x27;</span>
+  );
+  <span class="hljs-keyword">const</span> json = <span class="hljs-keyword">await</span> response.json();
+
+  <span class="hljs-built_in">console</span>.log(json);
+};
+
+sendRequest();</code></pre>
+        <blockquote>
+          <p>The above command returns JSON structured like this:</p>
+        </blockquote>
+        <pre class="highlight json"><code>[
+   {
+      &quot;lon&quot;:20,
+      &quot;location&quot;:{
+         &quot;city&quot;:&quot;Theed&quot;,
+         &quot;country&quot;:&quot;Naboo&quot;
+      },
+      &quot;company&quot;:&quot;Galactic Empire Inc.&quot;,
+      &quot;type&quot;:&quot;Star Wars Vehicle&quot;,
+      &quot;date&quot;:&quot;13 February, 2019 11:16 am &quot;,
+      &quot;price&quot;:&quot;100&quot;,
+      &quot;timestamp&quot;:1550053001462,
+      &quot;lat&quot;:40,
+      &quot;sensorId&quot;:&quot;star-wars&quot;,
+      &quot;address&quot;:&quot;YTGYEHBMEYPLIROTWBTLVZPOLJLXHNF9RXUPBGHSWGISAVIVEX9EHBMDVYYI9UEZ9UQJBCMXFGXNUKIWW&quot;,
+      &quot;inactive&quot;:true,
+      &quot;owner&quot;:&quot;76D1ppAqXNOYPDCsEm9tAj5rPhG3&quot;,
+      &quot;dataTypes&quot;:[
+         {
+            &quot;id&quot;:&quot;name&quot;,
+            &quot;unit&quot;:&quot;name&quot;,
+            &quot;name&quot;:&quot;Vehicle Name&quot;
+         },
+         {
+            &quot;name&quot;:&quot;Vehicle Model&quot;,
+            &quot;id&quot;:&quot;model&quot;,
+            &quot;unit&quot;:&quot;model&quot;
+         },
+         {
+            &quot;name&quot;:&quot;Vehicle Class&quot;,
+            &quot;id&quot;:&quot;class&quot;,
+            &quot;unit&quot;:&quot;class&quot;
+         },
+         {
+            &quot;id&quot;:&quot;manufacturer&quot;,
+            &quot;unit&quot;:&quot;manufacturer&quot;,
+            &quot;name&quot;:&quot;Vehicle Manufacturer&quot;
+         }
+      ],
+      &quot;sk&quot;:&quot;IHOHDLGKDLSJJXA&quot;
+   },
+   { ... }
+]</code></pre>
+        <p>This endpoint returns all devices created by given used.</p>
+        <h3 id="http-request-7">HTTP Request</h3>
+        <p><code>GET https://api.marketplace.tangle.works/devices</code></p>
+        <h3 id="query-parameters-3">Query Parameters</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parameters</th>
+              <th>Required</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>userId</td>
+              <td>true</td>
+              <td>Your user ID</td>
+            </tr>
+            <tr>
+              <td>apiKey</td>
+              <td>true</td>
+              <td>Your API key</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2 id="remove-device">Remove Device</h2>
+        <pre class="highlight javascript"><code><span class="hljs-keyword">const</span> fetch = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node-fetch&#x27;</span>);
+
+<span class="hljs-keyword">const</span> sendRequest = <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> fetch(<span class="hljs-string">&#x27;https://api.marketplace.tangle.works/delete&#x27;</span>, {
+    <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;DELETE&#x27;</span>,
+    <span class="hljs-attr">headers</span>: { <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> },
+    <span class="hljs-attr">body</span>: <span class="hljs-built_in">JSON</span>.stringify({
+      <span class="hljs-attr">apiKey</span>: <span class="hljs-string">&#x27;aaaaaaa-0b7a-4e44-7777-ef661777b9d2&#x27;</span>,
+      <span class="hljs-attr">deviceId</span>: <span class="hljs-string">&#x27;star-wars-test&#x27;</span>
+    })
+  });
+  <span class="hljs-keyword">const</span> json = <span class="hljs-keyword">await</span> response.json();
+  <span class="hljs-built_in">console</span>.log(json);
+};
+
+sendRequest();</code></pre>
+        <blockquote>
+          <p>The above command returns JSON structured like this:</p>
+        </blockquote>
+        <pre class="highlight json"><code>{
+  <span class="hljs-attr">&quot;success&quot;</span>: <span class="hljs-literal">true</span>
+}</code></pre>
+        <p>This endpoint removes a device from the database.</p>
+        <h3 id="http-request-8">HTTP Request</h3>
+        <p><code>DELETE https://api.marketplace.tangle.works/delete</code></p>
+        <h3 id="query-parameters-4">Query Parameters</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parameters</th>
+              <th>Required</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>apiKey</td>
+              <td>true</td>
+              <td>Your API key</td>
+            </tr>
+            <tr>
+              <td>deviceId</td>
+              <td>true</td>
+              <td>The ID of the device&#39;s stream you&#39;d like access to.</td>
+            </tr>
+          </tbody>
+        </table>
+        <h1 id="errors">Errors</h1>
+        <aside class="notice">This error section is stored in a separate file in `includes/_errors.md`. Slate allows you to optionally separate out your docs into many files...just save them to the `includes` folder and add them to the top of your `index.md`'s frontmatter. Files are included in the order listed.</aside>
+        <p>The Kittn API uses the following error codes:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Error Code</th>
+              <th>Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>400</td>
+              <td>Bad Request -- Your request sucks</td>
+            </tr>
+            <tr>
+              <td>401</td>
+              <td>Unauthorized -- Your API key is wrong</td>
+            </tr>
+            <tr>
+              <td>403</td>
+              <td>Forbidden -- The kitten requested is hidden for administrators only</td>
+            </tr>
+            <tr>
+              <td>404</td>
+              <td>Not Found -- The specified kitten could not be found</td>
+            </tr>
+            <tr>
+              <td>405</td>
+              <td>Method Not Allowed -- You tried to access a kitten with an invalid method</td>
+            </tr>
+            <tr>
+              <td>406</td>
+              <td>Not Acceptable -- You requested a format that isn&#39;t json</td>
+            </tr>
+            <tr>
+              <td>410</td>
+              <td>Gone -- The kitten requested has been removed from our servers</td>
+            </tr>
+            <tr>
+              <td>418</td>
+              <td>I&#39;m a teapot</td>
+            </tr>
+            <tr>
+              <td>429</td>
+              <td>Too Many Requests -- You&#39;re requesting too many kittens! Slow down!</td>
+            </tr>
+            <tr>
+              <td>500</td>
+              <td>Internal Server Error -- We had a problem with our server. Try again later.</td>
+            </tr>
+            <tr>
+              <td>503</td>
+              <td>Service Unavailable -- We&#39;re temporarially offline for maintanance. Please try again later.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
