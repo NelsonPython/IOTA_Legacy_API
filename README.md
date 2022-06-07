@@ -1,10 +1,13 @@
 # IOTA_Legacy_API
+
 This content was originally hosted at the IOTA Data Marketplace:  https://data.iota.org/#/
 
-The IOTA Data Marketplace API reached its end-of-life in April 2020 and the documentation was moved to:  https://wiki.iota.org/legacy
+The legacy IOTA Data Marketplace API reached its end-of-life in April 2020 and the documentation was ported to:  https://wiki.iota.org/legacy
+
+Specifications for the current REST API for the IOTA node software are described in this wiki:  https://wiki.iota.org/bee/api_reference and samples are shown here:  https://editor.swagger.io/?url=https://raw.githubusercontent.com/rufsam/protocol-rfcs/master/text/0026-rest-api/0026-rest-api.yaml
 
 
- <h1 id="introduction">Introduction</h1>
+<h1 id="introduction">Introduction</h1>
         <p>Welcome to the API documentation for the IOTA Data Marketplace. This provides you with the means to interact with the Marketplace programmatically. All interactions with this API will also effect the user interface, including your stream purchases and the devices you created/delete.</p>
         <p>The API exists for two purposes:</p>
         <ol>
